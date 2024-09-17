@@ -101,3 +101,48 @@
   $ curl http://localhost:3003
   <h1>Hello from Kubernetes!</h1>
   ```
+
+## 1.06
+
+- Add [`manifests/service.yaml`](manifests/service.yaml)
+
+- Delete the old cluster
+
+  ```sh
+  $ k3d cluster delete
+  INFO[0000] Deleting cluster 'k3s-default'
+  ...
+  INFO[0001] Successfully deleted cluster k3s-default!
+  ```
+
+- Create a new cluster
+
+  ```sh
+  $ k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
+  INFO[0000] portmapping '8081:80' targets the loadbalancer: defaulting to [servers:*:proxy agents:*:proxy] 
+  INFO[0000] Prep: Network                                
+  INFO[0000] Created network 'k3d-k3s-default'
+  ...
+  INFO[0016] Cluster 'k3s-default' created successfully!
+  ```
+
+- Create a new deployment
+
+  ```sh
+  $ kubectl apply -f manifests/deployment.yaml
+  deployment.apps/todo-app-project-dep created
+  ```
+
+- Create a new service
+
+  ```sh
+  $ kubectl apply -f manifests/service.yaml
+  service/todo-app-project-svc created
+  ```
+
+- Test the application
+
+  ```sh
+  $ curl http://localhost:8082
+  <h1>Hello from Kubernetes!</h1>
+  ```
