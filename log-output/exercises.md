@@ -28,3 +28,25 @@
   2024-09-17T17:52:23.198Z: 50e9e4da-b25a-49b8-aef5-8e73502541b1
   ...
   ```
+
+## 1.03
+
+- Create a new deployment
+
+  ```sh
+  $ kubectl apply -f manifests/deployment.yaml 
+  deployment.apps/log-output-dep created
+  ```
+
+- Get the name of the pod and check the logs
+
+  ```sh
+  $ kubectl get pods
+  NAME                              READY   STATUS    RESTARTS   AGE
+  log-output-dep-6869bc475f-r6nfg   1/1     Running   0          25s
+
+  $ kubectl logs -f log-output-dep-6869bc475f-r6nfg
+  2024-09-17T18:37:31.823Z: 2081b03b-d2fd-4fc0-a302-3621cd929ddc
+  2024-09-17T18:37:36.831Z: 2081b03b-d2fd-4fc0-a302-3621cd929ddc
+  ...
+  ```
