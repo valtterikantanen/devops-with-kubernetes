@@ -50,3 +50,40 @@
   2024-09-17T18:37:36.831Z: 2081b03b-d2fd-4fc0-a302-3621cd929ddc
   ...
   ```
+
+## 1.07
+
+- Build a new version of the image and push it to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/log-output:1.07
+  $ docker push vkantanen/log-output:1.07
+  ```
+
+- Update [`deployment.yaml`](manifests/deployment.yaml) to use the new image
+
+  ```diff
+  spec:
+    containers:
+      - name: log-output
+  -     image: vkantanen/log-output:1.01
+  +     image: vkantanen/log-output:1.07
+  ```
+
+- Create [`ingress.yaml`](manifests/ingress.yaml) and [`service.yaml`](manifests/service.yaml)
+
+- Apply the manifests
+
+  ```sh
+  $ kubectl apply -f manifests/
+  deployment.apps/log-output-dep created
+  ingress.networking.k8s.io/log-output-ingress created
+  service/log-output-svc created
+  ```
+
+- Test the application
+
+  ```sh
+  $ curl http://localhost:8081
+  2024-09-17T20:33:07.627Z: aa0d0a80-f183-420f-aa95-7172eaca12e3
+  ```

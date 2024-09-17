@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import express from 'express';
 
 const randomString = randomUUID();
 
@@ -11,4 +12,16 @@ function logRandomString() {
   setTimeout(logRandomString, 5000);
 }
 
+const app = express();
+
+const PORT = process.env.PORT ?? 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server started in port ${PORT}`);
+});
+
 logRandomString();
+
+app.get('/', (req, res) => {
+  res.send(getCurrentStatus());
+});

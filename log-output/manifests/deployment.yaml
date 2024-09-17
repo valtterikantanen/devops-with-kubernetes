@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
         - name: log-output
-          image: vkantanen/log-output:1.01
+          image: vkantanen/log-output:1.07
