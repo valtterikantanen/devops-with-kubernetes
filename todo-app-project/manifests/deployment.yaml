@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
         - name: todo-app-project
-          image: vkantanen/todo-app-project:1.02
+          image: vkantanen/todo-app-project:1.05
