@@ -221,3 +221,14 @@
   ```
 
 - On the browser, we can still see the same picture that was shown before deleting the deployment
+
+## 1.13
+
+- Add an input field, a send button and a list of todos to the application
+
+- Build a new version of the image and push it to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/todo-app-project:1.13
+  $ docker push vkantanen/todo-app-project:1.13
+  ```

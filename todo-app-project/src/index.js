@@ -48,8 +48,15 @@ app.get('/', async (req, res) => {
   res.send(`
     <html>
       <body>
-        <h1>Hello from Kubernetes!</h1>
         <img src="image.jpg" width="400" height="400" />
+        <form>
+          <input type="text" maxlength="140" />
+          <button type="submit">Create Todo</button>
+        </form>
+        <ul>
+          <li>Todo 1</li>
+          <li>Todo 2</li>
+        </ul>
       </body>
     </html>
   `);
