@@ -12,6 +12,17 @@ spec:
       labels:
         app: log-output
     spec:
+      volumes:
+        - name: shared-log-output
+          emptyDir: {}
       containers:
-        - name: log-output
-          image: vkantanen/log-output:1.07
+        - name: log-output-reader
+          image: vkantanen/log-output-reader:1.10
+          volumeMounts:
+            - name: shared-log-output
+              mountPath: /usr/src/app/files
+        - name: log-output-generator
+          image: vkantanen/log-output-generator:1.10
+          volumeMounts:
+            - name: shared-log-output
+              mountPath: /usr/src/app/files

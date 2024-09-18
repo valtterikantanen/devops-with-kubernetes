@@ -87,3 +87,50 @@
   $ curl http://localhost:8081
   2024-09-17T20:33:07.627Z: aa0d0a80-f183-420f-aa95-7172eaca12e3
   ```
+
+## 1.10
+
+- Split the original *Log output* application into two applications: `log-output-generator` and `log-output-reader`
+  - `log-output-generator` generates a new timestamp every 5 seconds and writes it to a file `timestamp.txt`
+  - `log-output-reader` generates a UUID when the server is started and reads the content of `timestamp.txt`. It logs the timestamp and the UUID every 5 seconds and also sends the data in the response when the root path is accessed
+
+- Build new images and push them to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/log-output-generator:1.10
+  $ docker push vkantanen/log-output-generator:1.10
+  $ docker build . -t vkantanen/log-output-reader:1.10
+  $ docker push vkantanen/log-output-reader:1.10
+  ```
+
+- Update [`deployment.yaml`](manifests/deployment.yaml)
+
+- Apply the manifests
+
+  ```sh
+  $ kubectl apply -f manifests/
+  deployment.apps/log-output-dep created
+  ingress.networking.k8s.io/log-output-ingress created
+  service/log-output-svc created
+  ```
+
+- Check the logs
+
+  ```sh
+  $ kubectl get pods
+  NAME                              READY   STATUS    RESTARTS   AGE
+  log-output-dep-579fc88cd6-dwvw8   2/2     Running   0          8s
+  
+  $ kubectl logs log-output-dep-579fc88cd6-dwvw8 --all-containers=true --prefix
+  [pod/log-output-dep-579fc88cd6-dwvw8/log-output-reader] Server started in port 3000
+  [pod/log-output-dep-579fc88cd6-dwvw8/log-output-reader] File not found: /usr/src/app/files/timestamp.txt
+  [pod/log-output-dep-579fc88cd6-dwvw8/log-output-reader] 2024-09-18T13:28:53.234Z: e63c17ac-968a-4df3-b4ee-8c046c4a0772
+  [pod/log-output-dep-579fc88cd6-dwvw8/log-output-reader] 2024-09-18T13:28:58.241Z: e63c17ac-968a-4df3-b4ee-8c046c4a0772
+  ```
+
+- Test the application
+
+  ```sh
+  $ curl http://localhost:8081
+  2024-09-18T13:29:13.254Z: e63c17ac-968a-4df3-b4ee-8c046c4a0772
+  ```
