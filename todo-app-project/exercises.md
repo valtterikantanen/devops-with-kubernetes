@@ -146,3 +146,30 @@
   $ curl http://localhost:8082
   <h1>Hello from Kubernetes!</h1>
   ```
+
+## 1.08
+
+- Delete the ingress of log-output
+
+  ```sh
+  $ kubectl delete ingress log-output-ingress
+  ingress.networking.k8s.io "log-output-ingress" deleted
+  ```
+
+- Create [`ingress.yaml`](manifests/ingress.yaml) and update [`service.yaml`](manifests/service.yaml)
+
+- Apply the manifests
+
+  ```sh
+  $ kubectl apply -f manifests/
+  deployment.apps/todo-app-project-dep unchanged
+  ingress.networking.k8s.io/todo-app-project-ingress created
+  service/todo-app-project-svc configured
+  ```
+
+- Test the application
+
+  ```sh
+  $ curl http://localhost:8081
+  <h1>Hello from Kubernetes!</h1>
+  ```
