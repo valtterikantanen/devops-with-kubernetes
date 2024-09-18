@@ -24,6 +24,21 @@ async function getCurrentStatus() {
   }
 }
 
+async function getPingPongCounter() {
+  const filePath = join(import.meta.dirname, 'files', 'pingpong.txt');
+  try {
+    const counter = await readFile(filePath, { encoding: 'utf-8' });
+    return counter;
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      console.error(`File not found: ${filePath}`);
+    } else {
+      console.error('Failed to read pingpong counter:', error);
+    }
+    return null;
+  }
+}
+
 async function logRandomString() {
   const currentStatus = await getCurrentStatus();
   if (currentStatus) {
@@ -41,7 +56,8 @@ app.listen(PORT, () => {
 
 app.get('/', async (req, res) => {
   const currentStatus = await getCurrentStatus();
-  res.send(currentStatus);
+  const pingPongCounter = await getPingPongCounter();
+  res.send(`${currentStatus}\nPing / Pongs: ${pingPongCounter}`);
 });
 
 while (true) {

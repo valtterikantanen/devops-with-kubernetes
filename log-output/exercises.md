@@ -134,3 +134,7 @@
   $ curl http://localhost:8081
   2024-09-18T13:29:13.254Z: e63c17ac-968a-4df3-b4ee-8c046c4a0772
   ```
+
+## 1.11
+
+See the steps from [`ping-pong/exercises.md`](../ping-pong/exercises.md#1.11).

@@ -12,6 +12,13 @@ spec:
       labels:
         app: ping-pong
     spec:
+      volumes:
+        - name: ping-pong-vol
+          persistentVolumeClaim:
+            claimName: ping-pong-claim
       containers:
         - name: ping-pong
-          image: vkantanen/ping-pong:1.09
+          image: vkantanen/ping-pong:1.11
+          volumeMounts:
+            - name: ping-pong-vol
+              mountPath: /usr/src/app/files

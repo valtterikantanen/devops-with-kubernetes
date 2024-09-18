@@ -13,16 +13,17 @@ spec:
         app: log-output
     spec:
       volumes:
-        - name: shared-log-output
-          emptyDir: {}
+        - name: ping-pong-vol
+          persistentVolumeClaim:
+            claimName: ping-pong-claim
       containers:
         - name: log-output-reader
-          image: vkantanen/log-output-reader:1.10
+          image: vkantanen/log-output-reader:1.11
           volumeMounts:
-            - name: shared-log-output
+            - name: ping-pong-vol
               mountPath: /usr/src/app/files
         - name: log-output-generator
           image: vkantanen/log-output-generator:1.10
           volumeMounts:
-            - name: shared-log-output
+            - name: ping-pong-vol
               mountPath: /usr/src/app/files
