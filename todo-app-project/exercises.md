@@ -173,3 +173,51 @@
   $ curl http://localhost:8081
   <h1>Hello from Kubernetes!</h1>
   ```
+
+## 1.12
+
+- Build a new version of the image and push it to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/todo-app-project:1.12
+  $ docker push vkantanen/todo-app-project:1.12
+  ```
+
+- Update [`deployment.yaml`](manifests/deployment.yaml)
+
+- Apply the manifests
+
+  ```sh
+  $ kubectl apply -f ../manifests/
+  persistentvolumeclaim/ping-pong-claim created
+  persistentvolume/dwk-pv created
+
+  $ kubectl apply -f manifests/
+  deployment.apps/todo-app-project-dep created
+  ingress.networking.k8s.io/todo-app-project-ingress created
+  service/todo-app-project-svc created
+  ```
+
+- Test the application
+
+  ```sh
+  $ curl http://localhost:8081
+  <html>
+    <body>
+      <h1>Hello from Kubernetes!</h1>
+      <img src="image.jpg" width="400" height="400" />
+    </body>
+  </html>
+  ```
+
+- Delete and recreate the deployment
+
+  ```sh
+  $ kubectl delete deployment todo-app-project-dep
+  deployment.apps "todo-app-project-dep" deleted
+
+  $ kubectl apply -f manifests/deployment.yaml
+  deployment.apps/todo-app-project-dep created
+  ```
+
+- On the browser, we can still see the same picture that was shown before deleting the deployment
