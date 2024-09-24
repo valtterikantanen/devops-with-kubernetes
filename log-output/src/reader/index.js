@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
+import axios from 'axios';
 import express from 'express';
 
 const randomString = randomUUID();
@@ -25,17 +26,11 @@ async function getCurrentStatus() {
 }
 
 async function getPingPongCounter() {
-  const filePath = join(import.meta.dirname, 'files', 'pingpong.txt');
   try {
-    const counter = await readFile(filePath, { encoding: 'utf-8' });
-    return counter;
+    const response = await axios.get('http://ping-pong-svc:2345/pongs');
+    return response.data.counter;
   } catch (error) {
-    if (error.code === 'ENOENT') {
-      console.error(`File not found: ${filePath}`);
-    } else {
-      console.error('Failed to read pingpong counter:', error);
-    }
-    return null;
+    console.error(error);
   }
 }
 

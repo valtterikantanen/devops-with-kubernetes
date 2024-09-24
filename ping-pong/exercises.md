@@ -88,3 +88,7 @@
   $ curl http://localhost:8081/pingpong
   pong 1
   ```
+
+## 2.01
+
+See the steps from [`log-output/exercises.md`](../log-output/exercises.md#2.01).

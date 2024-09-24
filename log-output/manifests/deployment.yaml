@@ -18,7 +18,7 @@ spec:
             claimName: ping-pong-claim
       containers:
         - name: log-output-reader
-          image: vkantanen/log-output-reader:1.11
+          image: vkantanen/log-output-reader:2.01
           volumeMounts:
             - name: ping-pong-vol
               mountPath: /usr/src/app/files

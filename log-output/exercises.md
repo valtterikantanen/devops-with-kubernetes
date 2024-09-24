@@ -138,3 +138,38 @@
 ## 1.11
 
 See the steps from [`ping-pong/exercises.md`](../ping-pong/exercises.md#1.11).
+
+## 2.01
+
+- Build new images and push them to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/log-output-reader:2.01
+  $ docker push vkantanen/log-output-reader:2.01
+  $ docker build . -t vkantanen/ping-pong:2.01
+  $ docker push vkantanen/ping-pong:2.01
+  ```
+
+- Update `deployment.yaml` of [`log-output`](manifests/deployment.yaml) and [`ping-pong`](../ping-pong/manifests/deployment.yaml)
+
+- Apply the manifests
+
+  ```sh
+  $ kubectl apply -f manifests/deployment.yaml
+  deployment.apps/log-output-dep configured
+  $ kubectl apply -f ../ping-pong/manifests/deployment.yaml
+  deployment.apps/ping-pong-dep configured
+  ```
+
+- Test the application
+
+  ```sh
+  $ curl http://localhost:8081
+  2024-09-24T12:16:42.185Z: 00377b70-068b-4bf2-aec8-4e7848f5fe3d
+  Ping / Pongs: 0
+  $ curl http://localhost:8081/pingpong
+  pong 0
+  $ curl http://localhost:8081
+  2024-09-24T12:17:32.245Z: 00377b70-068b-4bf2-aec8-4e7848f5fe3d
+  Ping / Pongs: 1
+  ```
