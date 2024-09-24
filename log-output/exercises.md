@@ -137,7 +137,7 @@
 
 ## 1.11
 
-See the steps from [`ping-pong/exercises.md`](../ping-pong/exercises.md#1.11).
+See the steps from [`ping-pong/exercises.md`](../ping-pong/exercises.md#111).
 
 ## 2.01
 

@@ -91,4 +91,4 @@
 
 ## 2.01
 
-See the steps from [`log-output/exercises.md`](../log-output/exercises.md#2.01).
+See the steps from [`log-output/exercises.md`](../log-output/exercises.md#201).
