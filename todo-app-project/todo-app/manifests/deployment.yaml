@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: dwk-project
   name: todo-app-project-dep
 spec:
   replicas: 1
@@ -15,7 +16,7 @@ spec:
       volumes:
         - name: todo-app-vol
           persistentVolumeClaim:
-            claimName: ping-pong-claim
+            claimName: todo-app-claim
       containers:
         - name: todo-app-project
           image: vkantanen/todo-app-project:2.02

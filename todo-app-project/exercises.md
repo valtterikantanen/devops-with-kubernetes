@@ -269,3 +269,16 @@
   $ curl http://localhost:8081/todos
   [{"id":"06156b3a-1dc7-45d3-8314-e8ff8ce51393","task":"Buy milk","createdAt":"2024-09-24T20:53:24.031Z"}]
   ```
+
+## 2.04
+
+- Create a namespace `dwk-project`
+
+  ```sh
+  $ kubectl create namespace dwk-project
+  namespace/dwk-project created
+  ```
+
+- Add [`persistent-volume-claim.yaml`](./todo-app/manifests/persistent-volume-claim.yaml) for `todo-app`
+
+- Update the manifests to use the namespace `dwk-project`
