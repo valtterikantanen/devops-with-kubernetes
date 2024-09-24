@@ -18,7 +18,7 @@ spec:
             claimName: ping-pong-claim
       containers:
         - name: todo-app-project
-          image: vkantanen/todo-app-project:1.12
+          image: vkantanen/todo-app-project:2.02
           volumeMounts:
             - name: todo-app-vol
-              mountPath: /usr/src/app/static
+              mountPath: /usr/src/app/static/assets/images

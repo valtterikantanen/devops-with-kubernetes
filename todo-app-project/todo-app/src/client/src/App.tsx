@@ -1,22 +1,50 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
+
+type Todo = {
+  id: string;
+  task: string;
+  createdAt: string;
+};
 
 export default function App() {
   const [imageSrc, setImageSrc] = useState('');
+  const [newTodo, setNewTodo] = useState('');
+  const [todos, setTodos] = useState<Todo[]>([]);
 
   useEffect(() => {
-    setImageSrc('/assets/image.jpg');
+    setImageSrc('/assets/images/image.jpg');
+    axios.get('/todos').then(response => {
+      setTodos(response.data);
+    });
   }, []);
+
+  function handleCreateTodo(event: React.FormEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    axios.post('/todos', { task: newTodo }).then(response => {
+      setTodos(prevTodos => [...prevTodos, response.data]);
+      setNewTodo('');
+    });
+  }
 
   return (
     <>
       <img src={imageSrc} width="400" height="400" />
       <form>
-        <input type="text" maxLength={140} />
-        <button type="submit">Create Todo</button>
+        <input
+          type="text"
+          maxLength={140}
+          value={newTodo}
+          onChange={event => setNewTodo(event.target.value)}
+        />
+        <button type="submit" onClick={handleCreateTodo}>
+          Create Todo
+        </button>
       </form>
       <ul>
-        <li>Todo 1</li>
-        <li>Todo 2</li>
+        {todos.map(todo => (
+          <li key={todo.id}>{todo.task}</li>
+        ))}
       </ul>
     </>
   );

@@ -232,3 +232,40 @@
   $ docker build . -t vkantanen/todo-app-project:1.13
   $ docker push vkantanen/todo-app-project:1.13
   ```
+
+## 2.02
+
+- Build new images and push them to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/todo-app-project:2.02
+  $ docker push vkantanen/todo-app-project:2.02
+  $ docker build . -t vkantanen/todo-app-backend:2.02
+  $ docker push vkantanen/todo-app-backend:2.02
+  ```
+
+- Update [`ingress.yaml`](todo-app/manifests/ingress.yaml) and [`deployment.yaml`](todo-app/manifests/deployment.yaml) of `todo-app`
+
+- Add [`deployment.yaml`](todo-backend/manifests/deployment.yaml) and [`service.yaml`](todo-backend/manifests/service.yaml) for `todo-backend`
+
+- Apply the manifests
+
+  ```sh
+  $ kubectl apply -f todo-app/manifests/
+  deployment.apps/todo-app-project-dep created
+  ingress.networking.k8s.io/todo-app-project-ingress created
+  service/todo-app-project-svc created
+  $ kubectl apply -f todo-backend/manifests/
+  deployment.apps/todo-app-backend-dep created
+  service/todo-app-backend-svc created
+  ```
+
+- Test the application
+
+  ![Page before adding a todo](../images/Todo-app-202-1.png "Page before adding a todo")
+  ![Page after adding a todo](../images/Todo-app-202-2.png "Page after adding a todo")
+
+  ```sh
+  $ curl http://localhost:8081/todos
+  [{"id":"06156b3a-1dc7-45d3-8314-e8ff8ce51393","task":"Buy milk","createdAt":"2024-09-24T20:53:24.031Z"}]
+  ```

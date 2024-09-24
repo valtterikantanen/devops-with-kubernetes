@@ -6,8 +6,8 @@ import express from 'express';
 const app = express();
 
 const PORT = process.env.PORT ?? 3000;
-await fs.mkdir(path.join(import.meta.dirname, 'static'), { recursive: true });
-const imagePath = path.join(import.meta.dirname, 'static', 'assets', 'image.jpg');
+await fs.mkdir(path.join(import.meta.dirname, 'static', 'assets', 'images'), { recursive: true });
+const imagePath = path.join(import.meta.dirname, 'static', 'assets', 'images', 'image.jpg');
 
 async function fetchAndSaveImage() {
   try {
