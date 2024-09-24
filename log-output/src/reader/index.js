@@ -34,6 +34,25 @@ async function getPingPongCounter() {
   }
 }
 
+async function getFileContent() {
+  const filePath = join(import.meta.dirname, 'config', 'information.txt');
+  try {
+    const content = await readFile(filePath, { encoding: 'utf-8' });
+    return `file content: ${content}`;
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      console.error(`File not found: ${filePath}`);
+    } else {
+      console.error('Failed to read file:', error);
+    }
+    return null;
+  }
+}
+
+function getEnvVariable() {
+  return `env variable: MESSAGE=${process.env.MESSAGE}`;
+}
+
 async function logRandomString() {
   const currentStatus = await getCurrentStatus();
   if (currentStatus) {
@@ -52,7 +71,9 @@ app.listen(PORT, () => {
 app.get('/', async (req, res) => {
   const currentStatus = await getCurrentStatus();
   const pingPongCounter = await getPingPongCounter();
-  res.send(`${currentStatus}\nPing / Pongs: ${pingPongCounter}`);
+  const fileContent = await getFileContent();
+  const envVariable = getEnvVariable();
+  res.send(`${fileContent}\n${envVariable}\n${currentStatus}\nPing / Pongs: ${pingPongCounter}`);
 });
 
 while (true) {

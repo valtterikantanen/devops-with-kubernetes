@@ -17,12 +17,26 @@ spec:
         - name: ping-pong-vol
           persistentVolumeClaim:
             claimName: ping-pong-claim
+        - name: configmap-vol
+          configMap:
+            name: log-output-configmap
+            items:
+              - key: information.txt
+                path: information.txt
       containers:
         - name: log-output-reader
-          image: vkantanen/log-output-reader:2.01
+          image: vkantanen/log-output-reader:2.06
+          env:
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: log-output-configmap
+                  key: message
           volumeMounts:
             - name: ping-pong-vol
               mountPath: /usr/src/app/files
+            - name: configmap-vol
+              mountPath: /usr/src/app/config
         - name: log-output-generator
           image: vkantanen/log-output-generator:1.10
           volumeMounts:

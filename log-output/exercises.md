@@ -179,3 +179,51 @@ See the steps from [`ping-pong/exercises.md`](../ping-pong/exercises.md#111).
 - Move [`persistent-volume-claim.yaml`](./manifests/persistent-volume-claim.yaml) from `manifests` to `log-output/manifests`
 
 - Update the manifests to use the namespace `dwk-exercises` that was created [here](../ping-pong/exercises.md#203).
+
+## 2.06
+
+- Build a new version of the `log-output-reader` image and push it to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/log-output-reader:2.06
+  $ docker push vkantanen/log-output-reader:2.06
+  ```
+
+- Update [`deployment.yaml`](./manifests/deployment.yaml) and add [`configmap.yaml`](./manifests/configmap.yaml)
+
+- Apply the manifests
+
+  ```sh
+  $ kubectl apply -f manifests/
+  configmap/log-output-configmap created
+  deployment.apps/log-output-dep created
+  ingress.networking.k8s.io/log-output-ingress created
+  persistentvolumeclaim/ping-pong-claim created
+  service/log-output-svc created
+  ```
+
+- Test the application
+
+  ```sh
+  $ curl http://localhost:8081
+  file content: This text is from a file
+
+  env variable: MESSAGE=Hello, World!
+  2024-09-24T23:23:48.455Z: c44bbce9-70ea-4944-ac38-05b9252d82a8
+  Ping / Pongs: 0
+  ```
+
+- Check that `information.txt` is stored as a file
+
+  ```sh
+  $ kubectl get pods
+  NAME                              READY   STATUS    RESTARTS   AGE
+  log-output-dep-7559b48b44-cg6xd   2/2     Running   0          2m23s
+  ping-pong-dep-b99ff6d87-lsvsl     1/1     Running   0          20m
+
+  $ kubectl exec -it log-output-dep-7559b48b44-cg6xd -c log-output-reader -- ls config/
+  information.txt
+
+  $ kubectl exec -it log-output-dep-7559b48b44-cg6xd -c log-output-reader -- cat config/information.txt
+  This text is from a file
+  ```
