@@ -173,3 +173,9 @@ See the steps from [`ping-pong/exercises.md`](../ping-pong/exercises.md#111).
   2024-09-24T12:17:32.245Z: 00377b70-068b-4bf2-aec8-4e7848f5fe3d
   Ping / Pongs: 1
   ```
+
+## 2.03
+
+- Move [`persistent-volume-claim.yaml`](./manifests/persistent-volume-claim.yaml) from `manifests` to `log-output/manifests`
+
+- Update the manifests to use the namespace `dwk-exercises` that was created [here](../ping-pong/exercises.md#203).

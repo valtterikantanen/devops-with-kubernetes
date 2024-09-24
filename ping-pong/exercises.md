@@ -92,3 +92,14 @@
 ## 2.01
 
 See the steps from [`log-output/exercises.md`](../log-output/exercises.md#201).
+
+## 2.03
+
+- Create a namespace `dwk-exercises`
+
+  ```sh
+  $ kubectl create namespace dwk-exercises
+  namespace/dwk-exercises created
+  ```
+
+- Update the manifests to use the namespace `dwk-exercises`
