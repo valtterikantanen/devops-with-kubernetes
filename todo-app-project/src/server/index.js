@@ -7,7 +7,7 @@ const app = express();
 
 const PORT = process.env.PORT ?? 3000;
 await fs.mkdir(path.join(import.meta.dirname, 'static'), { recursive: true });
-const imagePath = path.join(import.meta.dirname, 'static', 'image.jpg');
+const imagePath = path.join(import.meta.dirname, 'static', 'assets', 'image.jpg');
 
 async function fetchAndSaveImage() {
   try {
@@ -34,30 +34,16 @@ async function shouldFetchImage() {
   }
 }
 
-app.listen(PORT, () => {
-  console.log(`Server started in port ${PORT}`);
-});
-
-app.use(express.static('static'));
-
 app.get('/', async (req, res) => {
   const shouldFetch = await shouldFetchImage();
   if (shouldFetch) {
     await fetchAndSaveImage();
   }
-  res.send(`
-    <html>
-      <body>
-        <img src="image.jpg" width="400" height="400" />
-        <form>
-          <input type="text" maxlength="140" />
-          <button type="submit">Create Todo</button>
-        </form>
-        <ul>
-          <li>Todo 1</li>
-          <li>Todo 2</li>
-        </ul>
-      </body>
-    </html>
-  `);
+  res.sendFile(path.resolve(import.meta.dirname, 'static', 'index.html'));
+});
+
+app.use(express.static('static'));
+
+app.listen(PORT, () => {
+  console.log(`Server started in port ${PORT}`);
 });

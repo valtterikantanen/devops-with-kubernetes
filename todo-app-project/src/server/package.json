@@ -1,5 +1,5 @@
 {
-  "name": "todo-app-project",
+  "name": "todo-app-project-server",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
