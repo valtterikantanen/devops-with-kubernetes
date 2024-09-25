@@ -15,4 +15,10 @@ spec:
     spec:
       containers:
         - name: ping-pong
-          image: vkantanen/ping-pong:2.01
+          image: vkantanen/ping-pong:2.07
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
