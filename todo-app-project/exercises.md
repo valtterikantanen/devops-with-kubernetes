@@ -344,3 +344,29 @@
    6955ebf0-527d-41e8-a06c-ad40deb3cc72 | Buy milk | 2024-09-25 19:38:57.983302
   (1 row)
   ```
+
+## 2.09
+
+- Build an image for `todo-cron` and push it to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/todo-cron:2.09
+  $ docker push vkantanen/todo-cron:2.09
+  ```
+
+- Create [`cronjob.yaml`](./todo-backend/manifests/cronjob.yaml) for `todo-backend`
+  - Schedule was first set to `* * * * *` for testing purposes
+
+- Apply the manifest
+
+  ```sh
+  $ kubectl apply -f manifests/cronjob.yaml
+  cronjob.batch/todo-cron created
+  ```
+
+- Test the application
+
+  ```sh
+  $ curl http://localhost:8081/todos
+  [{"id":"6955ebf0-527d-41e8-a06c-ad40deb3cc72","task":"Buy milk","createdAt":"2024-09-25T19:38:57.983Z"},{"id":"234e8260-c048-4831-ae75-8aafc97a9fac","task":"Read https://en.wikipedia.org/wiki/Subhash_Maharia","createdAt":"2024-09-25T20:44:03.413Z"}]
+  ```
