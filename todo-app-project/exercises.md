@@ -282,3 +282,65 @@
 - Add [`persistent-volume-claim.yaml`](./todo-app/manifests/persistent-volume-claim.yaml) for `todo-app`
 
 - Update the manifests to use the namespace `dwk-project`
+
+## 2.08
+
+- Build a new image for `todo-backend` and push it to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/todo-app-backend:2.08
+  $ docker push vkantanen/todo-app-backend:2.08
+  ```
+
+- Create `secret.yaml` and [`postgres.yaml`](./todo-backend/manifests/postgres.yaml) for `todo-backend` and update [`deployment.yaml`](./todo-backend/manifests/deployment.yaml)
+
+- Encrypt the `secret.yaml` with `sops` and delete the original file
+
+  ```sh
+  $ sops --encrypt \
+         --age age1ng3clrslk9jrqhjtp4yev3x33qwlt2tp58j5na5qm6mevej6hdxslhcqq2 \
+         --encrypted-regex '^(data)$' \
+         manifests/secret.yaml > manifests/secret.enc.yaml
+  $ rm manifests/secret.yaml
+  ```
+
+- Apply the manifests
+
+  ```sh
+  $ kubectl apply -f ../todo-app/manifests
+  deployment.apps/todo-app-project-dep created
+  ingress.networking.k8s.io/todo-app-project-ingress created
+  persistentvolumeclaim/todo-app-claim created
+  service/todo-app-project-svc created
+
+  $ sops --decrypt manifests/secret.enc.yaml | kubectl apply -f -
+  secret/postgres-secret created
+
+  $ kubectl apply -f manifests/deployment.yaml,manifests/postgres.yaml,manifests/service.yaml
+  deployment.apps/todo-app-backend-dep created
+  service/postgres-svc created
+  statefulset.apps/postgres-sts created
+  service/todo-app-backend-svc created
+  ```
+
+- Test the application
+
+  ![Page before adding a todo](../images/Todo-app-208-1.png "Page before adding a todo")
+  ![Page after adding a todo](../images/Todo-app-208-2.png "Page after adding a todo")
+
+  ```sh
+  $ curl http://localhost:8081/todos
+  [{"id":"6955ebf0-527d-41e8-a06c-ad40deb3cc72","task":"Buy milk","createdAt":"2024-09-25T19:38:57.983Z"}]
+
+  $ kubectl get pods
+  NAME                                    READY   STATUS    RESTARTS   AGE
+  postgres-sts-0                          1/1     Running   0          9m16s
+  todo-app-backend-dep-64ffd4f68c-6zmvx   1/1     Running   0          5m6s
+  todo-app-project-dep-784585748c-k96w6   1/1     Running   0          9m26s
+
+  $ kubectl exec postgres-sts-0 -- psql -U postgres -c "SELECT * FROM todos"
+                    id                  |   task   |         created_at         
+  --------------------------------------+----------+----------------------------
+   6955ebf0-527d-41e8-a06c-ad40deb3cc72 | Buy milk | 2024-09-25 19:38:57.983302
+  (1 row)
+  ```

@@ -15,4 +15,10 @@ spec:
     spec:
       containers:
         - name: todo-app-backend
-          image: vkantanen/todo-app-backend:2.02
+          image: vkantanen/todo-app-backend:2.08
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
