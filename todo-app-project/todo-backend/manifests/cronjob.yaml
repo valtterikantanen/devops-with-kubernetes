@@ -10,6 +10,6 @@ spec:
       template:
         spec:
           containers:
-            - name: hello
+            - name: todo-cron
               image: vkantanen/todo-cron:2.09
           restartPolicy: OnFailure
