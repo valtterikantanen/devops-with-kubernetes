@@ -1,5 +1,8 @@
 import express from 'express';
+import morgan from 'morgan';
 import pg from 'pg';
+
+import { logger } from './util/logger.js';
 
 const pool = new pg.Pool({
   host: 'postgres-svc',
@@ -19,11 +22,11 @@ async function connectToDatabase() {
   while (retries < maxRetries) {
     try {
       const client = await pool.connect();
-      console.log('Connected to database');
+      logger.info('Connected to database');
       client.release();
       return;
     } catch (error) {
-      console.error(`Database connection failed (${retries + 1}/${maxRetries})`, error);
+      logger.error(`Database connection failed (${retries + 1}/${maxRetries})`, error);
       retries++;
       await sleep(5000);
     }
@@ -42,15 +45,18 @@ connectToDatabase()
     `);
   })
   .then(() => {
-    console.log('Database initialized');
+    logger.info('Database initialized');
   })
   .catch(error => {
-    console.error('Error connecting to database', error);
+    logger.error('Error connecting to database', error);
   });
 
 const app = express();
 
 const PORT = process.env.PORT ?? 3000;
+
+morgan.token('body', req => JSON.stringify(req.body));
+app.use(morgan(':method :url :status - :body - :req[content-length] - :response-time ms'));
 
 app.use(express.json());
 
@@ -77,5 +83,5 @@ app.post('/todos', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server started in port ${PORT}`);
+  logger.info(`Server started in port ${PORT}`);
 });

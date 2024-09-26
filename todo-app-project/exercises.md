@@ -370,3 +370,48 @@
   $ curl http://localhost:8081/todos
   [{"id":"6955ebf0-527d-41e8-a06c-ad40deb3cc72","task":"Buy milk","createdAt":"2024-09-25T19:38:57.983Z"},{"id":"234e8260-c048-4831-ae75-8aafc97a9fac","task":"Read https://en.wikipedia.org/wiki/Subhash_Maharia","createdAt":"2024-09-25T20:44:03.413Z"}]
   ```
+
+## 2.10
+
+- Build a new image for `todo-backend` and push it to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/todo-app-backend:2.10
+  $ docker push vkantanen/todo-app-backend:2.10
+  ```
+
+- Update [`deployment.yaml`](./todo-backend/manifests/deployment.yaml)
+
+- Apply the manifest
+
+  ```sh
+  $ kubectl apply -f todo-backend/manifests/deployment.yaml
+  deployment.apps/todo-app-backend-dep configured
+  ```
+
+- Install Helm, Prometheus, and Loki like in the [material](https://devopswithkubernetes.com/part-2/5-monitoring)
+
+- Forward the port
+
+  ```sh
+  $ kubectl get pods -n prometheus | grep grafana | awk '{print $1}'
+  kube-prometheus-stack-1727299895-grafana-678977f64-lx7lg
+  
+  $ kubectl -n prometheus port-forward kube-prometheus-stack-1727299895-grafana-678977f64-lx7lg 3000
+  Forwarding from 127.0.0.1:3000 -> 3000
+  Forwarding from [::1]:3000 -> 3000
+  ```
+
+- Test the applicaation
+
+  ```sh
+  $ curl -X POST http://localhost:8081/todos \
+    -H "Content-Type: application/json" \
+    -d "{\"task\": \"Did you know that the backend won't save the todo if it's over 140 characters long? I'm pretty sure this is over 140 characters long. Let's see if it works.\"}"
+  {"error":"Task cannot be longer than 140 characters"}
+
+  $ curl http://localhost:8081/todos
+  [{"id":"6955ebf0-527d-41e8-a06c-ad40deb3cc72","task":"Buy milk","createdAt":"2024-09-25T19:38:57.983Z"},{"id":"234e8260-c048-4831-ae75-8aafc97a9fac","task":"Read https://en.wikipedia.org/wiki/Subhash_Maharia","createdAt":"2024-09-25T20:44:03.413Z"}]
+  ```
+
+  ![Loki in Grafana](../images/Todo-app-210.png "Loki in Grafana")
