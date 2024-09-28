@@ -197,3 +197,50 @@ See the steps from [`log-output/exercises.md`](../log-output/exercises.md#201).
     1 |     2
   (1 row)
   ```
+
+## 3.01
+
+- Install Google Could SDK and create a new project like in the [material](https://devopswithkubernetes.com/part-3/1-introduction-to-gke)
+
+- Create a new cluster in GKE
+
+  ```sh
+  $ gcloud container clusters create dwk-cluster --zone=europe-north1-b --cluster-version=1.29
+  ```
+
+- Create a new namespace `dwk-exercises` in the cluster
+
+  ```sh
+  $ kubectl create namespace dwk-exercises
+  namespace/dwk-exercises created
+  ```
+
+- Update [`service.yaml`](./manifests/service.yaml) and [`postgres.yaml`](./manifests/postgres.yaml)
+
+- Apply the manifests
+
+  ```sh
+  $ sops --decrypt manifests/secret.enc.yaml | kubectl apply -f -
+  secret/postgres-secret created
+
+  $ kubectl apply -f manifests/deployment.yaml,manifests/postgres.yaml,manifests/service.yaml
+  deployment.apps/ping-pong-dep created
+  service/postgres-svc created
+  statefulset.apps/postgres-sts created
+  service/ping-pong-svc created
+  ```
+
+- Test the application
+
+  ```sh
+  $ kubectl get svc                 
+  NAME            TYPE           CLUSTER-IP       EXTERNAL-IP    PORT(S)        AGE
+  ping-pong-svc   LoadBalancer   34.118.225.143   34.88.62.188   80:32653/TCP   105s
+  postgres-svc    ClusterIP      None             <none>         5432/TCP       105s
+
+  $ curl http://34.88.62.188/pingpong
+  pong 1
+
+  $ curl http://34.88.62.188/pingpong
+  pong 2
+  ```
