@@ -17,6 +17,6 @@ done
 
 json_payload=$(printf '{"task": "Read %s"}' "$url")
 
-curl -X POST "http://todo-app-backend-svc:2345/todos" \
+curl -X POST "http://todo-app-backend-svc:80/todos" \
   -H "Content-Type: application/json" \
   -d "$json_payload"
