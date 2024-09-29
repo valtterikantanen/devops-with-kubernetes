@@ -51,6 +51,10 @@ const app = express();
 
 const PORT = process.env.PORT ?? 3000;
 
+app.get('/', (req, res) => {
+  res.send('Service is running');
+});
+
 app.get('/pingpong', async (req, res) => {
   try {
     const result = await pool.query(

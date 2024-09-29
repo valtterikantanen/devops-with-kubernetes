@@ -227,3 +227,52 @@ See the steps from [`ping-pong/exercises.md`](../ping-pong/exercises.md#111).
   $ kubectl exec -it log-output-dep-7559b48b44-cg6xd -c log-output-reader -- cat config/information.txt
   This text is from a file
   ```
+
+## 3.02
+
+- Update URL of `ping-pong` from `http://ping-pong-svc:2345/pongs` to `http://ping-pong-svc:80/pongs` in [`index.js`](./src/reader/index.js)
+
+- Build a new version of the `log-output-reader` image and push it to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/log-output-reader:3.02
+  $ docker push vkantanen/log-output-reader:3.02
+  ```
+
+- Update [`deployment.yaml`](./manifests/deployment.yaml), [`ingress.yaml`](./manifests/ingress.yaml), [`persistent-volume-claim.yaml`](./manifests/persistent-volume-claim.yaml) and [`service.yaml`](./manifests/service.yaml)
+
+- Apply the manifests
+
+  ```sh
+  $ kubectl apply -f manifests/
+  configmap/log-output-configmap created
+  deployment.apps/log-output-dep created
+  ingress.networking.k8s.io/log-output-ingress created
+  persistentvolumeclaim/ping-pong-claim created
+  service/log-output-svc created
+  ```
+
+- Test the application
+
+  ```sh
+  $ kubectl get ing
+  NAME                 CLASS    HOSTS   ADDRESS        PORTS   AGE
+  log-output-ingress   <none>   *       34.36.26.217   80      4m36s
+
+  $ curl http://34.36.26.217
+  file content: This text is from a file
+
+  env variable: MESSAGE=Hello, World!
+  2024-09-29T12:46:02.804Z: fb3ee22c-8b24-426b-87ad-c29cedaaf898
+  Ping / Pongs: 2
+
+  $ curl http://34.36.26.217/pingpong
+  pong 3
+
+  $ curl http://34.36.26.217
+  file content: This text is from a file
+
+  env variable: MESSAGE=Hello, World!
+  2024-09-29T12:46:42.855Z: fb3ee22c-8b24-426b-87ad-c29cedaaf898
+  Ping / Pongs: 3
+  ```

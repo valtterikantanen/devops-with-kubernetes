@@ -27,7 +27,7 @@ async function getCurrentStatus() {
 
 async function getPingPongCounter() {
   try {
-    const response = await axios.get('http://ping-pong-svc:2345/pongs');
+    const response = await axios.get('http://ping-pong-svc:80/pongs');
     return response.data.counter;
   } catch (error) {
     console.error(error);

@@ -244,3 +244,24 @@ See the steps from [`log-output/exercises.md`](../log-output/exercises.md#201).
   $ curl http://34.88.62.188/pingpong
   pong 2
   ```
+
+## 3.02
+
+- Add a route `GET /` that responds with a status code of 200
+
+- Build a new image and push it to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/ping-pong:3.02
+  $ docker push vkantanen/ping-pong:3.02
+  ```
+
+- Change service type from `LoadBalancer` to `NodePort` in [`service.yaml`](./manifests/service.yaml) and update image tag in [`deployment.yaml`](./manifests/deployment.yaml)
+
+- Apply the manifest
+
+  ```sh
+  $ kubectl apply -f manifests/service.yaml,manifests/deployment.yaml
+  service/ping-pong-svc configured
+  deployment.apps/ping-pong-dep configured
+  ```
