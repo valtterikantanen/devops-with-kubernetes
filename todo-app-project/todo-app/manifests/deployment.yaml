@@ -8,6 +8,8 @@ spec:
   selector:
     matchLabels:
       app: todo-app-project
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
