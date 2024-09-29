@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: dwk-project
+
+resources:
+  - todo-app/manifests/deployment.yaml
+  - todo-app/manifests/service.yaml
+  - todo-app/manifests/persistent-volume-claim.yaml
+  - todo-app/manifests/ingress.yaml
+  - todo-backend/manifests/cronjob.yaml
+  - todo-backend/manifests/deployment.yaml
+  - todo-backend/manifests/postgres.yaml
+  - todo-backend/manifests/secret.yaml
+  - todo-backend/manifests/service.yaml
+
+images:
+  - name: TODO_APP_IMAGE
+    newName: vkantanen/todo-app-project:2.02
+  - name: TODO_BACKEND_IMAGE
+    newName: vkantanen/todo-app-backend:2.10
+  - name: TODO_CRON_IMAGE
+    newName: vkantanen/todo-cron:2.09

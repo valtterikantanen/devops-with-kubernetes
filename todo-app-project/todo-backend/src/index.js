@@ -60,6 +60,10 @@ app.use(morgan(':method :url :status - :body - :req[content-length] - :response-
 
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.send('Service is running');
+});
+
 app.get('/todos', async (req, res) => {
   const result = await pool.query('SELECT id, task, created_at AS "createdAt" FROM todos');
   const todos = result.rows;

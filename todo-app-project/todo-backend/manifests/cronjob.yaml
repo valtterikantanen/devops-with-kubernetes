@@ -11,5 +11,5 @@ spec:
         spec:
           containers:
             - name: todo-cron
-              image: vkantanen/todo-cron:2.09
+              image: TODO_CRON_IMAGE
           restartPolicy: OnFailure

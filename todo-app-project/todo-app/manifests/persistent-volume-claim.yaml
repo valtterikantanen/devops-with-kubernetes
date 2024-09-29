@@ -4,9 +4,8 @@ metadata:
   namespace: dwk-project
   name: todo-app-claim
 spec:
-  storageClassName: my-dwk-pv
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 1Gi

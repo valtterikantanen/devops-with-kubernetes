@@ -415,3 +415,22 @@
   ```
 
   ![Loki in Grafana](../images/Todo-app-210.png "Loki in Grafana")
+
+## 3.03
+
+- Create a new namespace `dwk-project` in the cluster
+
+  ```sh
+  $ kubectl create namespace dwk-project
+  namespace/dwk-project created
+  ```
+
+- Add [`kustomization.yaml`](./kustomization.yaml)
+
+- Add a route `GET /` to `todo-backend` that responds with a status code of 200
+
+- Update all manifests in `todo-app/manifests` and `todo-backend/manifests`
+
+- Create a service account for GKE and a key for it like in the [material](https://devopswithkubernetes.com/part-3/2-deployment-pipeline#github-actions)
+
+- Add [GHA workflow](./.github/workflows/main.yml) for building, pushing, and deploying the images
