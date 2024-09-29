@@ -52,7 +52,7 @@ jobs:
         run: |
           docker build --tag gcr.io/${PROJECT_ID}/todo-app-project:${BRANCH}-${GITHUB_SHA} todo-app/src
           docker build --tag gcr.io/${PROJECT_ID}/todo-app-backend:${BRANCH}-${GITHUB_SHA} todo-backend/src
-          docker build --tag gcr.io/${PROJECT_ID}/todo-cron:${BRANCH}-${GITHUB_SHA} cron
+          docker build --tag gcr.io/${PROJECT_ID}/todo-cron:${BRANCH}-${GITHUB_SHA} todo-cron
           docker push gcr.io/${PROJECT_ID}/todo-app-project:${BRANCH}-${GITHUB_SHA}
           docker push gcr.io/${PROJECT_ID}/todo-app-backend:${BRANCH}-${GITHUB_SHA}
           docker push gcr.io/${PROJECT_ID}/todo-cron:${BRANCH}-${GITHUB_SHA}
