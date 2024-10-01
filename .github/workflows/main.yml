@@ -47,6 +47,14 @@ jobs:
           export SOPS_AGE_KEY=${{ secrets.SOPS_AGE_KEY }}
           sops --decrypt todo-app-project/todo-backend/manifests/secret.enc.yaml > todo-app-project/todo-backend/manifests/secret.yaml
 
+      - name: Set namespace
+        run: |
+          if [[ "${BRANCH}" != "main" ]]; then
+            echo "NAMESPACE=${BRANCH}" >> $GITHUB_ENV
+          else
+            echo "NAMESPACE=default" >> $GITHUB_ENV
+          fi
+
       - name: Build and push Docker images
         working-directory: todo-app-project
         run: |
@@ -63,10 +71,13 @@ jobs:
       - name: Deploy to GKE
         working-directory: todo-app-project
         run: |
+          kubectl get namespace ${NAMESPACE} || kubectl create namespace ${NAMESPACE}
+          kubectl config set-context --current --namespace=${NAMESPACE}
+          kustomize edit set namespace ${NAMESPACE}
           kustomize edit set image TODO_APP_IMAGE=gcr.io/${PROJECT_ID}/todo-app-project:${BRANCH}-${GITHUB_SHA}
           kustomize edit set image TODO_BACKEND_IMAGE=gcr.io/${PROJECT_ID}/todo-app-backend:${BRANCH}-${GITHUB_SHA}
           kustomize edit set image TODO_CRON_IMAGE=gcr.io/${PROJECT_ID}/todo-cron:${BRANCH}-${GITHUB_SHA}
           kustomize build . | kubectl apply -f -
-          kubectl rollout status deployment/todo-app-project-dep --namespace dwk-project
-          kubectl rollout status deployment/todo-app-backend-dep --namespace dwk-project
+          kubectl rollout status deployment/todo-app-project-dep
+          kubectl rollout status deployment/todo-app-backend-dep
           kubectl get services -o wide

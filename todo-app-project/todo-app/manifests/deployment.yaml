@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: dwk-project
   name: todo-app-project-dep
 spec:
   replicas: 1

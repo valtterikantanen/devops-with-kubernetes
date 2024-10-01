@@ -1,7 +1,6 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  namespace: dwk-project
   name: todo-cron
 spec:
   schedule: "@hourly"
