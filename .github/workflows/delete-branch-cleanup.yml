@@ -13,6 +13,7 @@ jobs:
   clean-up-environment:
     name: Clean up environment
     runs-on: ubuntu-latest
+    if: github.event.ref_type == 'branch'
 
     steps:
       - name: Checkout code
@@ -31,13 +32,14 @@ jobs:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_ZONE }}
 
-      - name: Set namespace
+      - name: Extract deleted branch name and set namespace
         run: |
-          if [[ "${BRANCH}" != "main" ]]; then
-            echo "NAMESPACE=${BRANCH}" >> $GITHUB_ENV
-          else
+          DELETED_BRANCH=${{ github.event.ref }}
+          if [[ "${DELETED_BRANCH}" == "refs/heads/main" ]]; then
             echo "Branch 'main' cannot be deleted." && exit 1
           fi
+          NAMESPACE=${DELETED_BRANCH#refs/heads/}
+          echo "NAMESPACE=${NAMESPACE}" >> $GITHUB_ENV
 
       - name: Delete environment
         run: |
