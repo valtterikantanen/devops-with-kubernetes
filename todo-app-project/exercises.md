@@ -433,10 +433,16 @@
 
 - Create a service account for GKE and a key for it like in the [material](https://devopswithkubernetes.com/part-3/2-deployment-pipeline#github-actions)
 
-- Add [GHA workflow](./.github/workflows/main.yml) for building, pushing, and deploying the images
+- Add [GHA workflow](../.github/workflows/main.yml) for building, pushing, and deploying the images
 
 ## 3.04
 
 - Delete namespaces from manifests
 
-- Update [GHA workflow](./.github/workflows/main.yml)
+- Update [GHA workflow](../.github/workflows/main.yml)
+
+## 3.05
+
+- Add a new [GHA workflow](../.github/workflows/delete-branch-cleanup.yml) for deleting branches
+
+- You can see an example of the workflow running [here](https://github.com/valtterikantanen/devops-with-kubernetes/actions/runs/11133505429/job/30939741298)
