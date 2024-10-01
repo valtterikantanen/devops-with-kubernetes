@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
+import classes from './App.module.css';
+
 type Todo = {
   id: string;
   task: string;
@@ -30,7 +32,7 @@ export default function App() {
   return (
     <>
       <img src={imageSrc} width="400" height="400" />
-      <form>
+      <form className={classes.todoInputForm}>
         <input
           type="text"
           maxLength={140}

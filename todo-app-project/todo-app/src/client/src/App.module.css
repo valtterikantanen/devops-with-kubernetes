@@ -1,0 +1,5 @@
+.todoInputForm {
+  display: flex;
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
