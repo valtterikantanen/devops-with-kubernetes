@@ -446,3 +446,86 @@
 - Add a new [GHA workflow](../.github/workflows/delete-branch-cleanup.yml) for deleting branches
 
 - You can see an example of the workflow running [here](https://github.com/valtterikantanen/devops-with-kubernetes/actions/runs/11133505429/job/30939741298)
+
+## 3.07
+
+- Add a [Dockerfile](./backup-database/Dockerfile) and a [script](./backup-database/script.sh) for backing up the database
+
+- Update [kustomization.yaml](./kustomization.yaml) and [cronjob.yaml](./todo-backend/manifests/cronjob.yaml)
+
+- Update [GHA workflow](../.github/workflows/main.yml)
+
+- Enable Workload Identity on the GKE cluster
+
+  ```sh
+  $ gcloud container clusters update dwk-cluster \
+    --workload-pool=PROJECT_ID.svc.id.goog \
+    --zone=europe-north1-b
+  Updating dwk-cluster...done.
+  ```
+
+- Update the IAM policy to allow the Kubernetes service account to act as the Google Cloud service account
+
+  ```sh
+  $ gcloud iam service-accounts add-iam-policy-binding \
+    github-actions@PROJECT_ID.iam.gserviceaccount.com \
+    --member="serviceAccount:PROJECT_ID.svc.id.goog[default/github-actions]" \
+    --role="roles/iam.workloadIdentityUser"
+  Updated IAM policy for serviceAccount [github-actions@PROJECT_ID.iam.gserviceaccount.com].
+  ```
+
+- Create a Kubernetes Service Account
+
+  ```sh
+  $ kubectl create serviceaccount github-actions --namespace default
+  serviceaccount/github-actions created
+  ```
+
+- Annotate the Kubernetes Service Account
+
+  ```sh
+  $ kubectl annotate serviceaccount github-actions \
+    --namespace default \
+    iam.gke.io/gcp-service-account=github-actions@PROJECT_ID.iam.gserviceaccount.com
+  serviceaccount/github-actions annotated
+  ```
+
+- Update existing node pools to enable the GKE Metadata Server (otherwise existing nodes cannot retrieve the Workload Identity credentials)
+
+  ```sh
+  $ gcloud container node-pools list \
+    --cluster=dwk-cluster \
+    --zone=europe-north1-b
+
+  NAME          MACHINE_TYPE  DISK_SIZE_GB  NODE_VERSION
+  default-pool  e2-medium     100           1.29.8-gke.1057000
+
+  $ gcloud container node-pools update default-pool \  
+    --cluster=dwk-cluster \
+    --zone=europe-north1-b \
+    --workload-metadata=GKE_METADATA
+
+  Updating node pool default-pool... Updating default-pool, done with 3 out of 3 nodes (100.0%): 3 succeeded...done.
+  ```
+
+- Run the Cron Job manually from the Google Cloud Console
+
+- Check the logs
+
+  ```sh
+  $ kubectl get po
+  NAME                                    READY   STATUS      RESTARTS   AGE
+  postgres-backup-manual-sj2hc-pt8gb      0/1     Completed   0          24s
+  postgres-sts-0                          1/1     Running     0          57m
+  todo-app-backend-dep-8b65745cc-9jq87    1/1     Running     0          4m45s
+  todo-app-project-dep-54c947ffc8-jxql5   1/1     Running     0          4m15s
+  todo-cron-28803660-wkxdw                0/1     Completed   0          46m
+
+  $ kubectl logs postgres-backup-manual-sj2hc-pt8gb
+  Copying file:///tmp/backup-2024-10-06.sql [Content-Type=application/sql]...
+  / [1 files][  6.9 KiB/  6.9 KiB]                                                
+  Operation completed over 1 objects/6.9 KiB.
+
+  $ gsutil ls gs://todo-app-db-backup
+  gs://todo-app-db-backup/backup-2024-10-06.sql
+  ```
