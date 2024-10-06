@@ -533,3 +533,7 @@
 ## 3.08
 
 - I set a CPU limit of `50m` and a memory limit of `100Mi` for the application, based on its maximum observed usage over the last week.
+
+## 3.10
+
+![Logs Explorer](../images/Todo-app-310.png "Logs Explorer")
