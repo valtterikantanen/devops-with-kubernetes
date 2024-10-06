@@ -16,6 +16,10 @@ spec:
       containers:
         - name: ping-pong
           image: vkantanen/ping-pong:3.02
+          resources:
+            limits:
+              cpu: 50m
+              memory: 100Mi
           env:
             - name: DB_PASSWORD
               valueFrom:

@@ -26,6 +26,10 @@ spec:
       containers:
         - name: log-output-reader
           image: vkantanen/log-output-reader:3.02
+          resources:
+            limits:
+              cpu: 50m
+              memory: 100Mi
           env:
             - name: MESSAGE
               valueFrom:
@@ -39,6 +43,10 @@ spec:
               mountPath: /usr/src/app/config
         - name: log-output-generator
           image: vkantanen/log-output-generator:1.10
+          resources:
+            limits:
+              cpu: 50m
+              memory: 100Mi
           volumeMounts:
             - name: ping-pong-vol
               mountPath: /usr/src/app/files

@@ -276,3 +276,7 @@ See the steps from [`ping-pong/exercises.md`](../ping-pong/exercises.md#111).
   2024-09-29T12:46:42.855Z: fb3ee22c-8b24-426b-87ad-c29cedaaf898
   Ping / Pongs: 3
   ```
+
+## 3.09
+
+- I set a CPU limit of `50m` and a memory limit of `100Mi` for the application, based on its maximum observed usage over the last week.

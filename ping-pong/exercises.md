@@ -265,3 +265,7 @@ See the steps from [`log-output/exercises.md`](../log-output/exercises.md#201).
   service/ping-pong-svc configured
   deployment.apps/ping-pong-dep configured
   ```
+
+## 3.09
+
+- I set a CPU limit of `50m` and a memory limit of `100Mi` for the application, based on its maximum observed usage over the last week.
