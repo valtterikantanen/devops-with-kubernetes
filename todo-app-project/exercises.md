@@ -529,3 +529,7 @@
   $ gsutil ls gs://todo-app-db-backup
   gs://todo-app-db-backup/backup-2024-10-06.sql
   ```
+
+## 3.08
+
+- I set a CPU limit of `50m` and a memory limit of `100Mi` for the application, based on its maximum observed usage over the last week.
