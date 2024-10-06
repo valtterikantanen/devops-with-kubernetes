@@ -16,6 +16,7 @@ jobs:
   build-publish-deploy:
     name: Build, publish and deploy
     runs-on: ubuntu-latest
+    if: false
 
     steps:
       - name: Checkout code
