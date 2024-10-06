@@ -269,3 +269,56 @@ See the steps from [`log-output/exercises.md`](../log-output/exercises.md#201).
 ## 3.09
 
 - I set a CPU limit of `50m` and a memory limit of `100Mi` for the application, based on its maximum observed usage over the last week.
+
+## 4.01
+
+- Build a new image and push it to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/ping-pong:4.01
+  $ docker push vkantanen/ping-pong:4.01
+  ```
+
+- Update [`deployment.yaml`](./manifests/deployment.yaml)
+
+- Apply the manifests
+
+  ```sh
+  $ sops --decrypt manifests/secret.enc.yaml | kubectl apply -f -
+  secret/postgres-secret created
+
+  $ kubectl apply -f manifests/deployment.yaml,manifests/service.yaml
+  deployment.apps/ping-pong-dep created
+  service/ping-pong-svc created
+  ```
+
+- Test the ReadinessProbes
+
+  ```sh
+  $ kubectl get po
+  NAME                             READY   STATUS    RESTARTS   AGE
+  log-output-dep-c4dcddf6c-8qqlf   1/2     Running   0          44s
+  ping-pong-dep-6f7c7b874-t9bcf    0/1     Running   0          10s
+
+  $ kubectl logs log-output-dep-c4dcddf6c-8qqlf
+  Defaulted container "log-output-reader" out of: log-output-reader, log-output-generator
+  Server started in port 3000
+  2024-10-06T21:06:19.378Z: 8ed4633c-87f0-4bbd-b771-467f096a8cb3
+  Health check failed: AxiosError: getaddrinfo ENOTFOUND ping-pong-svc
+  ...
+
+  $ kubectl logs ping-pong-dep-6f7c7b874-t9bcf
+  Server started in port 3000
+  Health check failed: Error: getaddrinfo ENOTFOUND postgres-svc
+  ...
+
+  $ kubectl apply -f ping-pong/manifests/postgres.yaml 
+  service/postgres-svc created
+  statefulset.apps/postgres-sts created
+
+  $ kubectl get po
+  NAME                             READY   STATUS    RESTARTS   AGE
+  log-output-dep-c4dcddf6c-8qqlf   2/2     Running   0          2m1s
+  ping-pong-dep-6f7c7b874-t9bcf    1/1     Running   0          87s
+  postgres-sts-0                   1/1     Running   0          17s
+  ```

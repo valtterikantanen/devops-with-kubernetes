@@ -280,3 +280,27 @@ See the steps from [`ping-pong/exercises.md`](../ping-pong/exercises.md#111).
 ## 3.09
 
 - I set a CPU limit of `50m` and a memory limit of `100Mi` for the application, based on its maximum observed usage over the last week.
+
+## 4.01
+
+- Build a new version of the `log-output-reader` image and push it to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/log-output-reader:4.01
+  $ docker push vkantanen/log-output-reader:4.01
+  ```
+
+- Update [`deployment.yaml`](./manifests/deployment.yaml)
+
+- Apply the manifests
+
+  ```sh
+  $ kubectl apply -f manifests/
+  configmap/log-output-configmap created
+  deployment.apps/log-output-dep created
+  ingress.networking.k8s.io/log-output-ingress created
+  persistentvolumeclaim/ping-pong-claim created
+  service/log-output-svc created
+  ```
+
+- See the rest of the steps from [`ping-pong/exercises.md`](../ping-pong/exercises.md#401)

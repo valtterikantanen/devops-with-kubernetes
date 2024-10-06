@@ -68,6 +68,18 @@ app.listen(PORT, () => {
   console.log(`Server started in port ${PORT}`);
 });
 
+app.get('/healthz', (req, res) => {
+  axios
+    .get('http://ping-pong-svc:80/pongs')
+    .then(() => {
+      res.status(200).end();
+    })
+    .catch(error => {
+      console.error('Health check failed:', error);
+      res.status(500).end();
+    });
+});
+
 app.get('/', async (req, res) => {
   const currentStatus = await getCurrentStatus();
   const pingPongCounter = await getPingPongCounter();

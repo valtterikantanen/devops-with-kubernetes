@@ -55,6 +55,20 @@ app.get('/', (req, res) => {
   res.send('Service is running');
 });
 
+app.get('/healthz', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT 1');
+    if (result) {
+      res.status(200).end();
+    } else {
+      throw new Error('Database health check failed');
+    }
+  } catch (error) {
+    console.error('Health check failed:', error);
+    res.status(500).end();
+  }
+});
+
 app.get('/pingpong', async (req, res) => {
   try {
     const result = await pool.query(

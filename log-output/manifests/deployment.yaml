@@ -25,7 +25,7 @@ spec:
                 path: information.txt
       containers:
         - name: log-output-reader
-          image: vkantanen/log-output-reader:3.02
+          image: vkantanen/log-output-reader:4.01
           resources:
             limits:
               cpu: 50m
@@ -41,6 +41,12 @@ spec:
               mountPath: /usr/src/app/files
             - name: configmap-vol
               mountPath: /usr/src/app/config
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
         - name: log-output-generator
           image: vkantanen/log-output-generator:1.10
           resources:
