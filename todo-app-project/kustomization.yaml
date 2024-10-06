@@ -19,3 +19,4 @@ images:
     newName: vkantanen/todo-app-backend:2.10
   - name: TODO_CRON_IMAGE
     newName: vkantanen/todo-cron:2.09
+  - name: TODO_BACKUP_DB_IMAGE
