@@ -537,3 +537,78 @@
 ## 3.10
 
 ![Logs Explorer](../images/Todo-app-310.png "Logs Explorer")
+
+## 4.02
+
+- Build a new image for `todo-app-backend` and push it to Docker Hub
+
+  ```sh
+  $ docker build . -t vkantanen/todo-app-backend:4.02
+  $ docker push vkantanen/todo-app-backend:4.02
+  ```
+
+- Update [`deployment.yaml`](./todo-backend/manifests/deployment.yaml) and [`kustomization.yaml`](./kustomization.yaml)
+
+- Apply the manifests
+
+  ```sh
+  $ kubectl kustomize . | kubectl apply -f -
+  secret/postgres-secret created
+  service/postgres-svc created
+  service/todo-app-backend-svc created
+  service/todo-app-project-svc created
+  persistentvolumeclaim/todo-app-claim created
+  deployment.apps/todo-app-backend-dep created
+  deployment.apps/todo-app-project-dep created
+  statefulset.apps/postgres-sts created
+  ingress.networking.k8s.io/todo-app-project-ingress created
+
+  $ kubectl get po
+  NAME                                    READY   STATUS    RESTARTS   AGE
+  postgres-sts-0                          1/1     Running   0          19s
+  todo-app-backend-dep-6ff6c964f9-cggdh   1/1     Running   0          19s
+  todo-app-project-dep-66647b4658-v8jr4   1/1     Running   0          19s
+  ```
+
+- Temporarily change user from `postgres` to `postgre` and build a new image for `todo-app-backend`
+
+  ```sh
+  $ docker build . -t vkantanen/todo-app-backend:db-fail
+  $ docker push vkantanen/todo-app-backend:db-fail
+  ```
+
+- Update image in [`kustomization.yaml`](./kustomization.yaml)
+
+- Test that the health check works
+
+  ```sh
+  $ kubectl kustomize . | kubectl apply -f -
+  secret/postgres-secret unchanged
+  service/postgres-svc unchanged
+  service/todo-app-backend-svc unchanged
+  service/todo-app-project-svc unchanged
+  persistentvolumeclaim/todo-app-claim unchanged
+  deployment.apps/todo-app-backend-dep configured
+  deployment.apps/todo-app-project-dep unchanged
+  statefulset.apps/postgres-sts configured
+  ingress.networking.k8s.io/todo-app-project-ingress unchanged
+
+  $ kubectl get po
+  NAME                                    READY   STATUS    RESTARTS   AGE
+  postgres-sts-0                          1/1     Running   0          2m30s
+  todo-app-backend-dep-6ff6c964f9-cggdh   1/1     Running   0          2m30s
+  todo-app-backend-dep-8d567458-wmrqf     0/1     Running   0          15s
+  todo-app-project-dep-66647b4658-v8jr4   1/1     Running   0          2m30s
+
+  $ kubectl logs todo-app-backend-dep-8d567458-wmrqf
+  info: Server started in port 3000
+  Health check failed: error: password authentication failed for user "postgre"
+  ...
+
+  $ kubectl get po                                  
+  NAME                                    READY   STATUS    RESTARTS   AGE
+  postgres-sts-0                          1/1     Running   0          3m2s
+  todo-app-backend-dep-6ff6c964f9-cggdh   1/1     Running   0          3m2s
+  todo-app-backend-dep-8d567458-wmrqf     0/1     Running   0          47s
+  todo-app-project-dep-66647b4658-v8jr4   1/1     Running   0          3m2s
+  ```
