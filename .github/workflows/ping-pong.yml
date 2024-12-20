@@ -23,6 +23,7 @@ jobs:
 
       - name: Build and publish backend
         run: |-
+          cd ping-pong/src
           docker build --tag "vkantanen/ping-pong:$GITHUB_SHA" .
           docker push "vkantanen/ping-pong:$GITHUB_SHA"
 
