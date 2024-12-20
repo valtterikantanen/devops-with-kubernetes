@@ -644,3 +644,29 @@
 - Build new images for `todo-app-project` and `todo-app-backend`, and push them to Docker Hub
 
 - Update [`kustomization.yaml`](./kustomization.yaml)
+
+## 4.06
+
+- Install NATS
+
+  ```sh
+  helm install my-nats oci://registry-1.docker.io/bitnamicharts/nats
+  helm upgrade -f nats.yaml my-nats oci://registry-1.docker.io/bitnamicharts/nats
+  ```
+
+- Create [`todo-broadcaster`](./todo-broadcaster) service, add [`deployment.yaml`](./todo-broadcaster/manifests/deployment.yaml) and [`secret.yaml`](./todo-broadcaster/manifests/secret.enc.yaml)
+
+- Build a new image for `todo-broadcaster` and push it to Docker Hub
+
+  ```sh
+  docker build . -t vkantanen/todo-broadcaster:4.06
+  docker push vkantanen/todo-broadcaster:4.06
+  ```
+
+- Update `todo-backend` to send messages to NATS
+
+- Update [`kustomization.yaml`](./kustomization.yaml)
+
+- Messages will be sent to Telegram when a new todo is added or an existing todo is updated. Messages will be sent only once even with multiple replicas of `todo-broadcaster`
+
+  ![Telegram messages](../images/Todo-app-406.png "Telegram messages")

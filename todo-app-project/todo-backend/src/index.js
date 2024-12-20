@@ -1,6 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import pg from 'pg';
+import { connect, JSONCodec } from 'nats';
 
 import { logger } from './util/logger.js';
 
@@ -10,6 +11,9 @@ const pool = new pg.Pool({
   password: process.env.DB_PASSWORD,
   max: 10,
 });
+
+const nc = await connect({ servers: 'nats://my-nats.default.svc.cluster.local:4222' });
+const jc = JSONCodec();
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -109,6 +113,10 @@ app.post('/todos', async (req, res) => {
     [task]
   );
   const todo = result.rows[0];
+
+  const msg = { type: 'todo_created', payload: todo };
+  nc.publish('todo-events', jc.encode(msg));
+
   res.status(201).json(todo);
 });
 
@@ -126,7 +134,12 @@ app.put('/todos/:id', async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Todo not found' });
     }
-    return res.json(result.rows[0]);
+    const todo = result.rows[0];
+
+    const msg = { type: 'todo_updated', payload: todo };
+    nc.publish('todo-events', jc.encode(msg));
+
+    return res.json(todo);
   } catch (error) {
     logger.error(error);
     res.status(400).json({ error: error.message });
