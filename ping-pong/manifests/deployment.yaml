@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: ping-pong
-          image: vkantanen/ping-pong:4.01
+          image: PING_PONG_IMAGE
           resources:
             limits:
               cpu: 50m

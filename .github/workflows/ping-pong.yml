@@ -1,0 +1,39 @@
+name: Build and publish application
+
+on:
+  push:
+    paths:
+      - 'ping-pong/**'
+      - '.github/workflows/ping-pong.yml'
+
+jobs:
+  build-publish:
+    name: Build, push and release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and publish backend
+        run: |-
+          docker build --tag "vkantanen/ping-pong:$GITHUB_SHA" .
+          docker push "vkantanen/ping-pong:$GITHUB_SHA"
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Update image in kustomization.yaml
+        run: kustomize edit set image PING_PONG_IMAGE=vkantanen/ping-pong:$GITHUB_SHA
+
+      - name: Commit changes to kustomization.yaml
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'ping-pong/kustomization.yaml'
+          message: New version ${{ github.sha }} released for ping-pong

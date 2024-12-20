@@ -6,3 +6,7 @@ resources:
   - manifests/postgres.yaml
   - manifests/sealed-secret.yaml
   - manifests/service.yaml
+
+images:
+  - name: PING_PONG_IMAGE
+    newName: vkantanen/ping-pong:4.01
