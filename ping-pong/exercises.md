@@ -322,3 +322,15 @@ See the steps from [`log-output/exercises.md`](../log-output/exercises.md#201).
   ping-pong-dep-6f7c7b874-t9bcf    1/1     Running   0          87s
   postgres-sts-0                   1/1     Running   0          17s
   ```
+
+## 4.07
+
+- Create a new workflow [./.github/workflows/ping-pong.yml](./.github/workflows/ping-pong.yml)
+
+- Use a SealedSecret instead of a Secret encrypted with `sops`
+
+- Create [kustomization.yaml](./kustomization.yaml)
+
+- Add the app to ArgoCD as described in the [material](https://devopswithkubernetes.com/part-4/3-gitops) and confirm that the application synchronizes after a push to the repository
+
+  ![ArgoCD](../images/Ping-pong-407.png "ArgoCD")
