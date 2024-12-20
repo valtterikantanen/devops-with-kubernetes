@@ -622,3 +622,19 @@
   ```
   sum(kube_pod_info{created_by_kind="StatefulSet", namespace="prometheus"})
   ```
+
+## 4.04
+
+- Install Argo Rollouts as instructed in the [material](https://devopswithkubernetes.com/part-4/1-update-strategies-and-prometheus#canary-release)
+
+- Create [`analysistemplate.yaml`](./todo-backend/manifests/analysistemplate.yaml) and [`rollout.yaml`](./todo-backend/manifests/rollout.yaml) for `todo-backend`, and remove deployment.yaml
+
+- Update [`kustomization.yaml`](./kustomization.yaml)
+
+- Set successCondition temporarily to `result < 0.002`
+
+- Using the Argo Rollouts Kubectl plugin and the command `kubectl argo rollouts get rollout todo-app-backend-dep`, we can see that the rollout failed
+
+  ![Rollout step 1](../images/Todo-app-404-1.png "Rollout step 1")
+  ![Rollout step 2](../images/Todo-app-404-2.png "Rollout step 2")
+  ![Rollout step 3](../images/Todo-app-404-3.png "Rollout step 3")

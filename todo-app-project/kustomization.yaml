@@ -6,8 +6,9 @@ resources:
   - todo-app/manifests/service.yaml
   - todo-app/manifests/persistent-volume-claim.yaml
   - todo-app/manifests/ingress.yaml
-  - todo-backend/manifests/deployment.yaml
+  - todo-backend/manifests/analysistemplate.yaml
   - todo-backend/manifests/postgres.yaml
+  - todo-backend/manifests/rollout.yaml
   - todo-backend/manifests/secret.yaml
   - todo-backend/manifests/service.yaml
 
@@ -15,4 +16,4 @@ images:
   - name: TODO_APP_IMAGE
     newName: vkantanen/todo-app-project:4.02
   - name: TODO_BACKEND_IMAGE
-    newName: vkantanen/todo-app-backend:4.02
+    newName: vkantanen/todo-app-backend:4.04
