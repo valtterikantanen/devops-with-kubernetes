@@ -612,3 +612,13 @@
   todo-app-backend-dep-8d567458-wmrqf     0/1     Running   0          47s
   todo-app-project-dep-66647b4658-v8jr4   1/1     Running   0          3m2s
   ```
+
+## 4.03
+
+- Install Prometheus as instructed in the [material](https://devopswithkubernetes.com/part-2/5-monitoring)
+
+- Use the following query to get the number of pods created by StatefulSets in `prometheus` namespace:
+
+  ```
+  sum(kube_pod_info{created_by_kind="StatefulSet", namespace="prometheus"})
+  ```
