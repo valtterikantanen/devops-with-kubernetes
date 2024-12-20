@@ -31,7 +31,9 @@ jobs:
         uses: imranismail/setup-kustomize@v2
 
       - name: Update image in kustomization.yaml
-        run: kustomize edit set image PING_PONG_IMAGE=vkantanen/ping-pong:$GITHUB_SHA
+        run: |-
+          cd ping-pong
+          kustomize edit set image PING_PONG_IMAGE=vkantanen/ping-pong:$GITHUB_SHA
 
       - name: Commit changes to kustomization.yaml
         uses: EndBug/add-and-commit@v9
