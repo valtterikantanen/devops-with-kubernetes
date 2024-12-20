@@ -6,6 +6,7 @@ import classes from './App.module.css';
 type Todo = {
   id: string;
   task: string;
+  completed: boolean;
   createdAt: string;
 };
 
@@ -29,6 +30,12 @@ export default function App() {
     });
   }
 
+  function handleUpdateTodoStatus(todo: Todo) {
+    axios.put(`/todos/${todo.id}`, { completed: !todo.completed }).then(response => {
+      setTodos(prevTodos => prevTodos.map(t => (t.id === todo.id ? response.data : t)));
+    });
+  }
+
   return (
     <>
       <img src={imageSrc} width="400" height="400" />
@@ -45,7 +52,13 @@ export default function App() {
       </form>
       <ul>
         {todos.map(todo => (
-          <li key={todo.id}>{todo.task}</li>
+          <li
+            key={todo.id}
+            onClick={() => handleUpdateTodoStatus(todo)}
+            style={{ textDecoration: todo.completed ? 'line-through' : 'none', cursor: 'pointer' }}
+          >
+            {todo.task}
+          </li>
         ))}
       </ul>
     </>

@@ -14,6 +14,6 @@ resources:
 
 images:
   - name: TODO_APP_IMAGE
-    newName: vkantanen/todo-app-project:4.02
+    newName: vkantanen/todo-app-project:4.05
   - name: TODO_BACKEND_IMAGE
-    newName: vkantanen/todo-app-backend:4.04
+    newName: vkantanen/todo-app-backend:4.05

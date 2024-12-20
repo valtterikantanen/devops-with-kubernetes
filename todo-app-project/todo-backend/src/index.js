@@ -33,17 +33,27 @@ async function connectToDatabase() {
   }
 }
 
-connectToDatabase()
-  .then(() => {
-    pool.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
-    pool.query(`
+async function initializeDatabase() {
+  try {
+    await pool.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+    await pool.query(`
       CREATE TABLE IF NOT EXISTS todos (
         id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
         task VARCHAR(140) NOT NULL,
         created_at TIMESTAMP NOT NULL DEFAULT NOW()
       )
     `);
-  })
+    await pool.query(
+      'ALTER TABLE todos ADD COLUMN IF NOT EXISTS completed BOOLEAN NOT NULL DEFAULT FALSE'
+    );
+  } catch (error) {
+    logger.error('Error initializing database', error);
+    throw error;
+  }
+}
+
+connectToDatabase()
+  .then(() => initializeDatabase())
   .then(() => {
     logger.info('Database initialized');
   })
@@ -73,13 +83,15 @@ app.get('/healthz', async (req, res) => {
       throw new Error('Database health check failed');
     }
   } catch (error) {
-    console.error('Health check failed:', error);
+    logger.error('Health check failed:', error);
     res.status(500).end();
   }
 });
 
 app.get('/todos', async (req, res) => {
-  const result = await pool.query('SELECT id, task, created_at AS "createdAt" FROM todos');
+  const result = await pool.query(
+    'SELECT id, task, completed, created_at AS "createdAt" FROM todos'
+  );
   const todos = result.rows;
   res.json(todos);
 });
@@ -93,11 +105,32 @@ app.post('/todos', async (req, res) => {
     return res.status(400).json({ error: 'Task cannot be longer than 140 characters' });
   }
   const result = await pool.query(
-    'INSERT INTO todos (task) VALUES ($1) RETURNING id, task, created_at AS "createdAt"',
+    'INSERT INTO todos (task) VALUES ($1) RETURNING id, task, completed, created_at AS "createdAt"',
     [task]
   );
   const todo = result.rows[0];
   res.status(201).json(todo);
+});
+
+app.put('/todos/:id', async (req, res) => {
+  const { id } = req.params;
+  const completed = req.body.completed;
+  if (typeof completed !== 'boolean') {
+    return res.status(400).json({ error: 'Completed must be a boolean' });
+  }
+  try {
+    const result = await pool.query(
+      'UPDATE todos SET completed = $1 WHERE id = $2 RETURNING id, task, completed, created_at AS "createdAt"',
+      [completed, id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
+    return res.json(result.rows[0]);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).json({ error: error.message });
+  }
 });
 
 app.listen(PORT, () => {

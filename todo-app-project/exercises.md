@@ -638,3 +638,9 @@
   ![Rollout step 1](../images/Todo-app-404-1.png "Rollout step 1")
   ![Rollout step 2](../images/Todo-app-404-2.png "Rollout step 2")
   ![Rollout step 3](../images/Todo-app-404-3.png "Rollout step 3")
+
+## 4.05
+
+- Build new images for `todo-app-project` and `todo-app-backend`, and push them to Docker Hub
+
+- Update [`kustomization.yaml`](./kustomization.yaml)
