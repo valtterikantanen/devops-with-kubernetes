@@ -8,6 +8,7 @@ resources:
   - ../../base/todo-broadcaster
   - todo-backend/sealed-secret.yaml
   - todo-backend/cronjob-backup.yaml
+  - todo-broadcaster/sealed-secret.yaml
 
 images:
   - name: TODO_APP_IMAGE
