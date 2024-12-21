@@ -1,0 +1,55 @@
+name: Build and publish project to staging
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'todo-app-project/**'
+      - '.github/workflows/project-staging.yml'
+
+jobs:
+  build-publish:
+    name: Build, push and publish to staging
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: todo-app-project
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and publish application
+        run: |-
+          docker build --tag vkantanen/todo-app-backend:${GITHUB_SHA} todo-backend/src
+          docker build --tag vkantanen/todo-app-project:${GITHUB_SHA} todo-app/src
+          docker build --tag vkantanen/todo-broadcaster:${GITHUB_SHA} todo-broadcaster/src
+          docker build --tag vkantanen/todo-cron:${GITHUB_SHA} todo-cron
+          docker push vkantanen/todo-app-backend:${GITHUB_SHA}
+          docker push vkantanen/todo-app-project:${GITHUB_SHA}
+          docker push vkantanen/todo-broadcaster:${GITHUB_SHA}
+          docker push vkantanen/todo-cron:${GITHUB_SHA}
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Update images in kustomization.yaml
+        working-directory: todo-app-project/overlays/staging
+        run: |-
+          kustomize edit set image TODO_APP_IMAGE=vkantanen/todo-app-project:${GITHUB_SHA}
+          kustomize edit set image TODO_BACKEND_IMAGE=vkantanen/todo-app-backend:${GITHUB_SHA}
+          kustomize edit set image TODO_BROADCASTER_IMAGE=vkantanen/todo-broadcaster:${GITHUB_SHA}
+          kustomize edit set image TODO_CRON_IMAGE=vkantanen/todo-cron:${GITHUB_SHA}
+
+      - name: Commit changes to kustomization.yaml
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'overlays/staging/kustomization.yaml'
+          message: New version ${{ github.sha }} released to staging
