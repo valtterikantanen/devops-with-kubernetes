@@ -5,6 +5,8 @@ on:
     paths:
       - 'ping-pong/**'
       - '.github/workflows/ping-pong.yml'
+    tags-ignore:
+      - '*'
 
 jobs:
   build-publish:
@@ -21,7 +23,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and publish backend
+      - name: Build and publish application
         run: |-
           cd ping-pong/src
           docker build --tag "vkantanen/ping-pong:$GITHUB_SHA" .
