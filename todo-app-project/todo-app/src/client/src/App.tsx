@@ -38,6 +38,7 @@ export default function App() {
 
   return (
     <>
+      <h1>Todo App</h1>
       <img src={imageSrc} width="400" height="400" />
       <form className={classes.todoInputForm}>
         <input
