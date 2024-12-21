@@ -9,9 +9,6 @@ jobs:
   build-publish:
     name: Build, push and publish to production
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: todo-app-project
 
     steps:
       - name: Checkout
@@ -28,6 +25,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and publish application
+        working-directory: todo-app-project
         run: |-
           docker build --tag vkantanen/todo-app-backend:${GITHUB_SHA} todo-backend/src
           docker build --tag vkantanen/todo-app-project:${GITHUB_SHA} todo-app/src
@@ -55,5 +53,5 @@ jobs:
       - name: Commit changes to kustomization.yaml
         uses: EndBug/add-and-commit@v9
         with:
-          add: 'overlays/prod/kustomization.yaml'
+          add: 'todo-app-project/overlays/prod/kustomization.yaml'
           message: New version ${{ env.TAG_NAME }} released to production
