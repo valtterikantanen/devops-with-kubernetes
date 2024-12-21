@@ -2,9 +2,11 @@ import os from 'os';
 import axios from 'axios';
 import { connect, JSONCodec } from 'nats';
 
-const { NATS_SERVER, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID } = process.env;
+const { NATS_SERVER, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, NODE_ENV } = process.env;
 
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+const inProduction = NODE_ENV === 'production';
 
 async function start() {
   const nc = await connect({ servers: NATS_SERVER });
@@ -24,13 +26,16 @@ async function start() {
       const broadcaster = `Broadcasted by: \`${podName}\``;
       const message = `${header}\n${body}\n${broadcaster}`;
 
-      await axios.post(TELEGRAM_API_URL, {
-        chat_id: TELEGRAM_CHAT_ID,
-        text: message,
-        parse_mode: 'MarkdownV2',
-      });
-
-      console.log('Message forwarded to Telegram successfully.');
+      if (inProduction) {
+        await axios.post(TELEGRAM_API_URL, {
+          chat_id: TELEGRAM_CHAT_ID,
+          text: message,
+          parse_mode: 'MarkdownV2',
+        });
+        console.log('Message forwarded to Telegram successfully.');
+      } else {
+        console.log('Message:', message);
+      }
     } catch (err) {
       console.error('Failed to process message:', err);
     }
