@@ -670,3 +670,11 @@
 - Messages will be sent to Telegram when a new todo is added or an existing todo is updated. Messages will be sent only once even with multiple replicas of `todo-broadcaster`
 
   ![Telegram messages](../images/Todo-app-406.png "Telegram messages")
+
+## 4.08
+
+- Move all manifests to [`base`](./base/) and [`overlays`](./overlays/) directories
+
+- Update todo-broadcaster to not send messages to Telegram in the `staging` environment
+
+- Write workflow files for deploying to [`staging`](../.github/workflows/project-staging.yml) and [`production`](../.github/workflows/project-production.yml) environments
