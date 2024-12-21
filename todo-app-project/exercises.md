@@ -678,3 +678,33 @@
 - Update todo-broadcaster to not send messages to Telegram in the `staging` environment
 
 - Write workflow files for deploying to [`staging`](../.github/workflows/project-staging.yml) and [`production`](../.github/workflows/project-production.yml) environments
+
+## 5.02
+
+- Install [Linkerd](https://linkerd.io/2/getting-started/)
+
+- Install viz extension
+
+  ```sh
+  linkerd viz install | kubectl apply -f -
+  ```
+
+- Add Linkerd to the deployments
+
+  ```sh
+  kubectl get -n dwk-project-production deploy -o yaml \
+    | linkerd inject - \
+    | kubectl apply -f -
+  ```
+
+- Open Linkerd dashboard
+
+  ```sh
+  linkerd viz dashboard
+  ```
+
+- Deployments are now meshed
+
+  ![Linkerd dashboard](../images/Todo-app-502.png "Linkerd dashboard")
+
+- Modified manifests can be found [here](../manifests/injected-deployment.yaml)

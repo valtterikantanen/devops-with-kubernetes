@@ -1,0 +1,144 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"deployment.kubernetes.io/revision":"1"},"generation":2,"name":"todo-app-project-dep","namespace":"dwk-project-production","resourceVersion":"121253","uid":"22c5c3cc-e1dc-405e-9c0b-a957d5c35e96"},"spec":{"progressDeadlineSeconds":600,"replicas":1,"revisionHistoryLimit":10,"selector":{"matchLabels":{"app":"todo-app-project"}},"strategy":{"type":"Recreate"},"template":{"metadata":{"annotations":{"linkerd.io/inject":"enabled"},"labels":{"app":"todo-app-project"}},"spec":{"containers":[{"image":"vkantanen/todo-app-project:d94ce94d24dc4a3b07d5bda622e861b274ef34dd","imagePullPolicy":"IfNotPresent","name":"todo-app-project","resources":{"limits":{"cpu":"50m","memory":"100Mi"}},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","volumeMounts":[{"mountPath":"/usr/src/app/static/assets/images","name":"todo-app-vol"}]}],"dnsPolicy":"ClusterFirst","restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":30,"volumes":[{"name":"todo-app-vol","persistentVolumeClaim":{"claimName":"todo-app-claim"}}]}}},"status":{"availableReplicas":1,"conditions":[{"message":"Deployment has minimum availability.","reason":"MinimumReplicasAvailable","status":"True","type":"Available"},{"message":"ReplicaSet \"todo-app-project-dep-7bfd658d67\" has successfully progressed.","reason":"NewReplicaSetAvailable","status":"True","type":"Progressing"}],"observedGeneration":2,"readyReplicas":1,"replicas":1,"updatedReplicas":1}}
+    generation: 3
+    name: todo-app-project-dep
+    namespace: dwk-project-production
+    resourceVersion: "121783"
+    uid: 22c5c3cc-e1dc-405e-9c0b-a957d5c35e96
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: todo-app-project
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          linkerd.io/inject: enabled
+        labels:
+          app: todo-app-project
+      spec:
+        containers:
+        - image: vkantanen/todo-app-project:d94ce94d24dc4a3b07d5bda622e861b274ef34dd
+          imagePullPolicy: IfNotPresent
+          name: todo-app-project
+          resources:
+            limits:
+              cpu: 50m
+              memory: 100Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /usr/src/app/static/assets/images
+            name: todo-app-vol
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: todo-app-vol
+          persistentVolumeClaim:
+            claimName: todo-app-claim
+  status:
+    availableReplicas: 1
+    conditions:
+    - message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - message: ReplicaSet "todo-app-project-dep-799859b986" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"deployment.kubernetes.io/revision":"1"},"generation":2,"name":"todo-broadcaster-dep","namespace":"dwk-project-production","resourceVersion":"121178","uid":"cc3b5f94-65a8-4308-8bc0-7114138e96c7"},"spec":{"progressDeadlineSeconds":600,"replicas":6,"revisionHistoryLimit":10,"selector":{"matchLabels":{"app":"todo-broadcaster"}},"strategy":{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":"25%"},"type":"RollingUpdate"},"template":{"metadata":{"annotations":{"linkerd.io/inject":"enabled"},"labels":{"app":"todo-broadcaster"}},"spec":{"containers":[{"env":[{"name":"NATS_SERVER","value":"nats://my-nats.default.svc.cluster.local:4222"},{"name":"TELEGRAM_BOT_TOKEN","valueFrom":{"secretKeyRef":{"key":"TELEGRAM_BOT_TOKEN","name":"broadcaster-secret"}}},{"name":"TELEGRAM_CHAT_ID","valueFrom":{"secretKeyRef":{"key":"TELEGRAM_CHAT_ID","name":"broadcaster-secret"}}}],"image":"vkantanen/todo-broadcaster:d94ce94d24dc4a3b07d5bda622e861b274ef34dd","imagePullPolicy":"IfNotPresent","name":"todo-broadcaster","resources":{"limits":{"cpu":"50m","memory":"100Mi"}},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File"}],"dnsPolicy":"ClusterFirst","restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":30}}},"status":{"availableReplicas":6,"conditions":[{"message":"Deployment has minimum availability.","reason":"MinimumReplicasAvailable","status":"True","type":"Available"},{"message":"ReplicaSet \"todo-broadcaster-dep-8584d7d4fc\" has successfully progressed.","reason":"NewReplicaSetAvailable","status":"True","type":"Progressing"}],"observedGeneration":2,"readyReplicas":6,"replicas":6,"updatedReplicas":6}}
+    generation: 3
+    name: todo-broadcaster-dep
+    namespace: dwk-project-production
+    resourceVersion: "121714"
+    uid: cc3b5f94-65a8-4308-8bc0-7114138e96c7
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 6
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: todo-broadcaster
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          linkerd.io/inject: enabled
+        labels:
+          app: todo-broadcaster
+      spec:
+        containers:
+        - env:
+          - name: NATS_SERVER
+            value: nats://my-nats.default.svc.cluster.local:4222
+          - name: TELEGRAM_BOT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: TELEGRAM_BOT_TOKEN
+                name: broadcaster-secret
+          - name: TELEGRAM_CHAT_ID
+            valueFrom:
+              secretKeyRef:
+                key: TELEGRAM_CHAT_ID
+                name: broadcaster-secret
+          image: vkantanen/todo-broadcaster:d94ce94d24dc4a3b07d5bda622e861b274ef34dd
+          imagePullPolicy: IfNotPresent
+          name: todo-broadcaster
+          resources:
+            limits:
+              cpu: 50m
+              memory: 100Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 6
+    conditions:
+    - message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - message: ReplicaSet "todo-broadcaster-dep-5f695d57bb" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 3
+    readyReplicas: 6
+    replicas: 6
+    updatedReplicas: 6
+kind: List
+metadata: {}
+---
