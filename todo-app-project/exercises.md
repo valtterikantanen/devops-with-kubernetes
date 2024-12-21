@@ -708,3 +708,7 @@
   ![Linkerd dashboard](../images/Todo-app-502.png "Linkerd dashboard")
 
 - Modified manifests can be found [here](../manifests/injected-deployment.yaml)
+
+## 5.03
+
+- See the output [here](./5_03.txt)
