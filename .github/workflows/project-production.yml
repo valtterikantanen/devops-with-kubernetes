@@ -34,10 +34,10 @@ jobs:
       - name: Build and publish application
         working-directory: todo-app-project
         run: |-
-          docker build --tag vkantanen/todo-app-backend:${GITHUB_SHA} todo-backend/src
-          docker build --tag vkantanen/todo-app-project:${GITHUB_SHA} todo-app/src
+          docker build --tag vkantanen/todo-app-backend:${GITHUB_SHA} todo-backend
+          docker build --tag vkantanen/todo-app-project:${GITHUB_SHA} todo-app
           docker build --tag vkantanen/todo-app-backup-db:${GITHUB_SHA} backup-database
-          docker build --build-arg NODE_ENV=production --tag vkantanen/todo-broadcaster:${GITHUB_SHA} todo-broadcaster/src
+          docker build --build-arg NODE_ENV=production --tag vkantanen/todo-broadcaster:${GITHUB_SHA} todo-broadcaster
           docker build --tag vkantanen/todo-cron:${GITHUB_SHA} todo-cron
           docker push vkantanen/todo-app-backend:${GITHUB_SHA}
           docker push vkantanen/todo-app-project:${GITHUB_SHA}
