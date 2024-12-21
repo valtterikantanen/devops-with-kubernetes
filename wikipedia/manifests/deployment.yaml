@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wikipedia-app-dep
+  namespace: dwk-exercises
+  labels:
+    app: wikipedia
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wikipedia
+  template:
+    metadata:
+      labels:
+        app: wikipedia
+    spec:
+      volumes:
+        - name: shared-data
+          emptyDir: {}
+      initContainers:
+        - name: fetch-kubernetes-page
+          image: curlimages/curl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              curl -o /usr/share/nginx/html/index.html https://en.wikipedia.org/wiki/Kubernetes
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/share/nginx/html
+      containers:
+        - name: nginx
+          image: nginx:latest
+          resources:
+            limits:
+              cpu: 20m
+              memory: 100Mi
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/share/nginx/html
+        - name: fetch-random-page
+          image: curlimages/curl:latest
+          resources:
+            limits:
+              cpu: 20m
+              memory: 100Mi
+          command:
+            - /bin/sh
+            - -c
+            - |
+              while true; do
+                sleep $((300 + RANDOM % 600));
+                curl -Lo /usr/share/nginx/html/random.html https://en.wikipedia.org/wiki/Special:Random;
+              done
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/share/nginx/html
