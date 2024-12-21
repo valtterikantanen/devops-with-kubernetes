@@ -6,7 +6,3 @@ resources:
   - service.yaml
   - persistent-volume-claim.yaml
   - ingress.yaml
-
-images:
-  - name: TODO_APP_IMAGE
-    newName: vkantanen/todo-app-project:4.05
