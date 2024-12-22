@@ -9,4 +9,4 @@ resources:
 images:
 - name: PING_PONG_IMAGE
   newName: vkantanen/ping-pong
-  newTag: 3a4fb765bd95974d3f1d3f208a7914884de9abe4
+  newTag: 41d0668374d1bdd0e3ac5568b2b7f5aafc225473
