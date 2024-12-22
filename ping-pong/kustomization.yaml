@@ -2,10 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-- manifests/deployment.yaml
+- manifests/kservice.yaml
 - manifests/postgres.yaml
 - manifests/sealed-secret.yaml
-- manifests/service.yaml
 
 images:
 - name: PING_PONG_IMAGE

@@ -334,3 +334,49 @@ See the steps from [`log-output/exercises.md`](../log-output/exercises.md#201).
 - Add the app to ArgoCD as described in the [material](https://devopswithkubernetes.com/part-4/3-gitops) and confirm that the application synchronizes after a push to the repository
 
   ![ArgoCD](../images/Ping-pong-407.png "ArgoCD")
+
+## 5.07
+
+- Create [`kservice.yaml`](./manifests/kservice.yaml)
+
+- Update [`kustomization.yaml`](./kustomization.yaml)
+  
+  ```diff
+  resources:
+  - - manifests/deployment.yaml
+  + - manifests/kservice.yaml
+    - manifests/postgres.yaml
+    - manifests/sealed-secret.yaml
+  - - manifests/service.yaml
+  ```
+
+- Apply the manifests
+
+  ```sh
+  $ kubectl apply -k .
+  Warning: Kubernetes default value is insecure, Knative may default this to secure in a future release: spec.template.spec.containers[0].securityContext.allowPrivilegeEscalation, spec.template.spec.containers[0].securityContext.capabilities, spec.template.spec.containers[0].securityContext.runAsNonRoot, spec.template.spec.containers[0].securityContext.seccompProfile
+  service.serving.knative.dev/ping-pong created
+  service/postgres-svc created
+  statefulset.apps/postgres-sts created
+  sealedsecret.bitnami.com/postgres-secret created
+
+  $ kubectl get ksvc                                                               
+  NAME            URL                                              LATESTCREATED         LATESTREADY           READY   REASON
+  ping-pong       http://ping-pong.dwk-exercises.example.com       ping-pong-00001       ping-pong-00001       True    
+  ```
+
+- Test the application
+
+  ```sh
+  $ curl -H "Host: ping-pong.dwk-exercises.example.com" localhost:8081 
+  Service is running
+
+  $ curl -H "Host: ping-pong.dwk-exercises.example.com" localhost:8081/pongs
+  {"counter":0}
+
+  $ curl -H "Host: ping-pong.dwk-exercises.example.com" localhost:8081/pingpong
+  pong 1
+
+  $ curl -H "Host: ping-pong.dwk-exercises.example.com" localhost:8081/pongs   
+  {"counter":1}
+  ```
